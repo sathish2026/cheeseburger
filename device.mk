@@ -230,7 +230,14 @@ PRODUCT_PACKAGES += \
 # GPS
 PRODUCT_PACKAGES += \
     gps.msm8998 \
+    liblocation_api \
     gps.conf \
+    libgnss \
+    libgps.utils \
+    libloc_core \
+    libloc_stub \
+    libloc_pla \
+    libcurl \
     libgnsspps \
     libvehiclenetwork-native \
     android.hardware.gnss@1.0-impl-qti \
