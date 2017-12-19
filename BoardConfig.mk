@@ -207,6 +207,10 @@ TARGET_NO_RPC := true
 USE_DEVICE_SPECIFIC_GPS := true
 BOARD_VENDOR_QCOM_GPS_LOC_API_HARDWARE := $(TARGET_BOARD_PLATFORM)
 
+# Hidl
+DEVICE_MANIFEST_FILE := $(PLATFORM_PATH)/configs/manifest.xml
+DEVICE_MATRIX_FILE   := $(PLATFORM_PATH)/configs/compatibility_matrix.xml
+
 # Init
 TARGET_PLATFORM_DEVICE_BASE := /devices/soc/
 
