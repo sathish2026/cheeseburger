@@ -120,6 +120,12 @@ PRODUCT_PACKAGES += \
     libvolumelistener \
     tinymix
 
+PRODUCT_PACKAGES += \
+    android.hardware.audio@2.0-service \
+    android.hardware.audio@2.0-impl \
+    android.hardware.audio.effect@2.0-impl \
+    android.hardware.soundtrigger@2.0-impl
+
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/audio/aanc_tuning_mixer.txt:system/etc/aanc_tuning_mixer.txt \
     $(LOCAL_PATH)/audio/audio_effects.conf:system/vendor/etc/audio_effects.conf \
@@ -153,15 +159,31 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     external/ant-wireless/antradio-library/com.dsi.ant.antradio_library.xml:system/etc/permissions/com.dsi.ant.antradio_library.xml
 
+# Bluetooth
+PRODUCT_PACKAGES += \
+    libbt-vendor \
+    android.hardware.bluetooth@1.0-impl \
+    android.hardware.bluetooth@1.0-service
+
 # Camera
 PRODUCT_PACKAGES += \
-    Snap
+    Snap \
+    camera.device@1.0-impl \
+    camera.device@3.2-impl \
+    android.hardware.camera.provider@2.4-impl \
+    android.hardware.camera.provider@2.4-service \
+    vendor.qti.hardware.camera.device@1.0 \
+    vendor.qti.hardware.camera.device@1.0_vendor
 
 # Connectivity Engine support (CNE)
 PRODUCT_PACKAGES += \
     cneapiclient \
     com.quicinc.cne \
     services-ext
+
+# Configstore
+PRODUCT_PACKAGES += \
+    android.hardware.configstore@1.0-service
 
 # Display
 PRODUCT_PACKAGES += \
@@ -172,17 +194,38 @@ PRODUCT_PACKAGES += \
     liboverlay \
     libtinyxml \
     qdcm_calib_data_samsung_s6e3fa5_1080p_cmd_mode_dsi_panel.xml \
-    qdcm_calib_data_samsung_s6e3fa6_1080p_cmd_mode_dsi_panel.xml
-
+    qdcm_calib_data_samsung_s6e3fa6_1080p_cmd_mode_dsi_panel.xml \
+    android.hardware.graphics.allocator@2.0-impl \
+    android.hardware.graphics.allocator@2.0-service \
+    android.hardware.graphics.mapper@2.0-impl \
+    android.hardware.graphics.composer@2.1-impl \
+    android.hardware.graphics.composer@2.1-service \
+    android.hardware.memtrack@1.0-impl \
+    android.hardware.memtrack@1.0-service \
+    android.hardware.broadcastradio@1.0-impl \
+    vendor.display.color@1.0-service \
+    vendor.display.color@1.0-impl
 
 # Doze mode
 PRODUCT_PACKAGES += \
     OneplusDoze
 
+# DRM
+PRODUCT_PACKAGES += \
+    android.hardware.drm@1.0-impl \
+    android.hardware.drm@1.0-service \
+    android.hardware.drm@1.0-service.widevine
+
 # Fingerprint sensor
 PRODUCT_PACKAGES += \
     fingerprintd \
-    OneplusPocketMode
+    OneplusPocketMode \
+    android.hardware.biometrics.fingerprint@2.1-service
+
+# Gatekeeper HAL
+PRODUCT_PACKAGES += \
+    android.hardware.gatekeeper@1.0-impl \
+    android.hardware.gatekeeper@1.0-service
 
 # For android_filesystem_config.h
 PRODUCT_PACKAGES += \
@@ -193,7 +236,9 @@ PRODUCT_PACKAGES += \
     gps.msm8998 \
     gps.conf \
     libgnsspps \
-    libvehiclenetwork-native
+    libvehiclenetwork-native \
+    android.hardware.gnss@1.0-impl-qti \
+    android.hardware.gnss@1.0-service-qti
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/gps/etc/flp.conf:system/vendor/etc/flp.conf \
@@ -201,6 +246,16 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/gps/etc/lowi.conf:system/vendor/etc/lowi.conf \
     $(LOCAL_PATH)/gps/etc/sap.conf:system/vendor/etc/sap.conf \
     $(LOCAL_PATH)/gps/etc/xtwifi.conf:system/vendor/etc/xtwifi.conf
+
+# Healthd
+PRODUCT_PACKAGES += \
+    android.hardware.health@1.0-impl \
+    android.hardware.health@1.0-convert \
+    android.hardware.health@1.0-service
+
+# HIDL
+PRODUCT_PACKAGES += \
+    android.hidl.manager@1.0-java
 
 # IPv6
 PRODUCT_PACKAGES += \
@@ -220,9 +275,16 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/keylayout/fpc1020.kl:system/usr/keylayout/fpc1020.kl \
     $(LOCAL_PATH)/keylayout/synaptics.kl:system/usr/keylayout/synaptics.kl
 
+# Keymaster HAL
+PRODUCT_PACKAGES += \
+    android.hardware.keymaster@3.0-impl \
+    android.hardware.keymaster@3.0-service
+
 # Lights
 PRODUCT_PACKAGES += \
-    lights.msm8998
+    lights.msm8998 \
+    android.hardware.light@2.0-impl \
+    android.hardware.light@2.0-service
 
 # LiveDisplay native
 PRODUCT_PACKAGES += \
@@ -239,6 +301,19 @@ PRODUCT_COPY_FILES += \
     frameworks/av/media/libstagefright/data/media_codecs_google_telephony.xml:system/etc/media_codecs_google_telephony.xml \
     frameworks/av/media/libstagefright/data/media_codecs_google_video.xml:system/etc/media_codecs_google_video.xml
 
+# Media Extensions
+PRODUCT_PACKAGES += \
+    libavmediaserviceextensions \
+    libmediametrics \
+    libregistermsext \
+    mediametrics
+
+# Netutils
+PRODUCT_PACKAGES += \
+    netutils-wrapper-1.0 \
+    android.system.net.netd@1.0 \
+    libandroid_net
+
 # NFC
 PRODUCT_PACKAGES += \
     com.android.nfc_extras \
@@ -247,7 +322,10 @@ PRODUCT_PACKAGES += \
     NQNfcNci \
     nqnfcee_access.xml \
     nqnfcse_access.xml \
-    Tag
+    Tag \
+    android.hardware.nfc@1.0-impl \
+    vendor.nxp.hardware.nfc@1.0-impl \
+    vendor.nxp.hardware.nfc@1.0-service
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/nfc/libnfc-brcm.conf:system/etc/libnfc-brcm.conf \
@@ -268,7 +346,9 @@ PRODUCT_PACKAGES += \
 
 # Power
 PRODUCT_PACKAGES += \
-    power.msm8998
+    power.msm8998 \
+    android.hardware.power@1.0-service \
+    android.hardware.power@1.0-impl
 
 # QMI
 PRODUCT_PACKAGES += \
@@ -306,6 +386,10 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     librecovery_updater_cheeseburger
 
+# RenderScript HAL
+PRODUCT_PACKAGES += \
+    android.hardware.renderscript@1.0-impl
+
 # RIL
 PRODUCT_PACKAGES += \
     librmnetctl \
@@ -314,7 +398,23 @@ PRODUCT_PACKAGES += \
 
 # Sensors
 PRODUCT_PACKAGES += \
-    sensors.msm8998
+    sensors.msm8998 \
+    android.hardware.sensors@1.0-service
+
+# Thermal
+PRODUCT_PACKAGES += \
+    thermal.msm8996 \
+    android.hardware.thermal@1.0-impl \
+    android.hardware.thermal@1.0-service
+
+# Usb HAL
+PRODUCT_PACKAGES += \
+    android.hardware.usb@1.0-service
+
+# Vibrator
+PRODUCT_PACKAGES += \
+    android.hardware.vibrator@1.0-impl \
+    android.hardware.vibrator@1.0-service
 
 # Wifi
 PRODUCT_PACKAGES += \
@@ -326,8 +426,11 @@ PRODUCT_PACKAGES += \
     libwpa_client \
     hostapd \
     dhcpcd.conf \
+    wificond \
+    wifilogd \
     wpa_supplicant \
-    wpa_supplicant.conf
+    wpa_supplicant.conf \
+    android.hardware.wifi@1.0-service
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/wifi/hostapd_default.conf:system/etc/hostapd/hostapd_default.conf \
