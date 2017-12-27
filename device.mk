@@ -425,12 +425,12 @@ PRODUCT_PACKAGES += \
     ipacm \
     ipacm-diag \
     IPACM_cfg.xml \
+    hostapd \
+    hostapd_cli \
     libqsap_sdk \
     libQWiFiSoftApCfg \
-    libwpa_client \
-    hostapd \
+    libwifi-hal-qcom \
     wificond \
-    wifilogd \
     wpa_supplicant \
     wpa_supplicant.conf \
     android.hardware.wifi@1.0-service \
