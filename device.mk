@@ -330,15 +330,11 @@ PRODUCT_COPY_FILES += \
 # NFC
 PRODUCT_PACKAGES += \
     com.android.nfc_extras \
-    com.nxp.nfc.nq \
-    nfc_nci.nqx.default \
-    NQNfcNci \
-    nqnfcee_access.xml \
-    nqnfcse_access.xml \
     Tag \
     android.hardware.nfc@1.0-impl \
-    vendor.nxp.hardware.nfc@1.0-impl \
-    vendor.nxp.hardware.nfc@1.0-service
+    android.hardware.nfc@1.0-service \
+    nfc_nci.msm8998 \
+    NfcNci
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/nfc/libnfc-brcm.conf:$(TARGET_COPY_OUT_VENDOR)/etc/libnfc-brcm.conf \
