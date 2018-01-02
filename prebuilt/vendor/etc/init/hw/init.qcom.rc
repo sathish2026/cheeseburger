@@ -24,10 +24,15 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
+import init.oem.rc
+import init.oem.debug.rc
 
 import /vendor/etc/init/hw/init.qcom.usb.rc
 import /vendor/etc/init/hw/init.msm.usb.configfs.rc
 import /vendor/etc/init/hw/init.target.rc
+import /vendor/etc/init/hw/init.target.modprobe.rc
+import /vendor/etc/init/hw/init.qcom.factory.rc
+import /vendor/etc/init/hw/init.qcom.test.rc
 
 on early-init
     mount debugfs debugfs /sys/kernel/debug
@@ -342,8 +347,6 @@ on post-fs-data
     mkdir /data/vendor/audio/acdbdata 0770 media audio
     mkdir /data/vendor/audio/acdbdata/delta 0770 media audio
 
-    setprop vold.post_fs_data_done 1
-
     #Create a folder for SRS to be able to create a usercfg file
     #mkdir /data/data/media 0770 media media
 
@@ -401,6 +404,10 @@ on post-fs-data
 
     #Create FTM_AP dir for factory test
     mkdir /data/FTM_AP 0775 system system
+
+    # keep that at the end of on post-fs-data
+    # Set indication (checked by vold) that we have finished this action
+    setprop vold.post_fs_data_done 1
 
 service nqnfcinfo /system/vendor/bin/nqnfcinfo
     class late_start
@@ -558,7 +565,7 @@ service start_hci_filter /system/vendor/bin/wcnss_filter
     class late_start
     user bluetooth
     group bluetooth diag system wakelock
-    seclabel u:r:bluetooth:s0
+    seclabel u:r:wcnss_filter:s0
     disabled
 
 service bt-dun /system/bin/dun-server /dev/smd7 /dev/rfcomm0
@@ -691,6 +698,9 @@ service wpa_supplicant /vendor/bin/hw/wpa_supplicant \
     socket wpa_wlan0 dgram 660 wifi wifi
     disabled
     oneshot
+
+on property:wlan.driver.status=ok
+    chown wifi wifi /sys/module/wlan/parameters/fwpath
 
 service vendor.wigig_supplicant /vendor/bin/hw/wpa_supplicant \
     -iwigig0 -Dnl80211 -c/data/vendor/wifi/wigig_supplicant.conf \
@@ -1048,8 +1058,10 @@ service qlogd /system/xbin/qlogd
     socket qlogd stream 0662 system system
     class main
     disabled
+
 on property:persist.sys.qlogd=1
     start qlogd
+
 on property:persist.sys.qlogd=0
     stop qlogd
 
@@ -1115,7 +1127,6 @@ on charger
     setprop sys.usb.config mass_storage
     setprop sys.usb.configfs 1
 
-
 #add poweroffhandler
 service poweroffhandler /system/vendor/bin/poweroffhandler
     class core
@@ -1123,17 +1134,6 @@ service poweroffhandler /system/vendor/bin/poweroffhandler
     group graphics audio
     disabled
     oneshot
-
-# Logcat dump daemon, dumps logs to logdump partition
-#service logdumpd /system/bin/logcat -b all -v threadtime -D -w /dev/block/bootdevice/by-name/logdump
-#    class core
-#    writepid /dev/cpuset/system-background/tasks
-#    seclabel u:r:logdumpd:s0
-#    disabled
-
-# Logdumpd is enabled only for userdebug non-perf build
-#on property:ro.logdumpd.enabled=1
-#    start logdumpd
 
 service time_daemon /system/vendor/bin/time_daemon
     class main

@@ -354,6 +354,10 @@ PRODUCT_PACKAGES += \
     libOmxVenc \
     libstagefrighthw
 
+# Prebuilt
+PRODUCT_COPY_FILES += \
+    $(call find-copy-subdir-files,*,${LOCAL_PATH}/prebuilt/vendor,$(TARGET_COPY_OUT_VENDOR))
+
 # Power
 PRODUCT_PACKAGES += \
     power.msm8998 \
@@ -366,31 +370,6 @@ PRODUCT_COPY_FILES += \
 # QMI
 PRODUCT_PACKAGES += \
     libjson
-
-# Ramdisk
-PRODUCT_PACKAGES += \
-    fstab.qcom \
-    init.qcom.class_core.sh \
-    init.qcom.early_boot.sh \
-    init.qcom.power.rc \
-    init.qcom.rc \
-    init.qcom.sensors.sh \
-    init.qcom.sh \
-    init.qcom.syspart_fixup.sh \
-    init.msm.usb.configfs.rc \
-    init.qcom.usb.rc \
-    init.qcom.usb.sh \
-    init.target.rc \
-    ueventd.qcom.rc
-
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/bin/init.qti.qseecomd.sh:vendor/bin/init.qti.qseecomd.sh \
-    $(LOCAL_PATH)/rootdir/etc/init.qcom.coex.sh:vendor/bin/init.qcom.coex.sh \
-    $(LOCAL_PATH)/rootdir/etc/init.qcom.efs.sync.sh:vendor/bin/init.qcom.efs.sync.sh \
-    $(LOCAL_PATH)/rootdir/etc/init.qti.fm.sh:vendor/bin/init.qti.fm.sh \
-    $(LOCAL_PATH)/rootdir/etc/init.qcom.post_boot.sh:vendor/bin/init.qcom.post_boot.sh \
-    $(LOCAL_PATH)/rootdir/etc/init.qcom.sdio.sh:vendor/bin/init.qcom.sdio.sh \
-    $(LOCAL_PATH)/rootdir/etc/init.qcom.wifi.sh:vendor/bin/init.qcom.wifi.sh
 
 # Recovery
 PRODUCT_PACKAGES += \
