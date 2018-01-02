@@ -171,7 +171,6 @@ PRODUCT_PACKAGES += \
 # Camera
 PRODUCT_PACKAGES += \
     Snap \
-    camera.device@1.0-impl \
     camera.device@3.2-impl \
     android.hardware.camera.provider@2.4-impl \
     android.hardware.camera.provider@2.4-service \
@@ -207,7 +206,9 @@ PRODUCT_PACKAGES += \
     android.hardware.memtrack@1.0-service \
     android.hardware.broadcastradio@1.0-impl \
     vendor.display.color@1.0-service \
-    vendor.display.color@1.0-impl
+    vendor.display.color@1.0-impl \
+    vendor.display.config@1.0 \
+    vendor.display.config@1.0_vendor
 
 # Doze mode
 PRODUCT_PACKAGES += \
@@ -258,10 +259,6 @@ PRODUCT_PACKAGES += \
     android.hardware.health@1.0-impl \
     android.hardware.health@1.0-convert \
     android.hardware.health@1.0-service
-
-# HIDL
-PRODUCT_PACKAGES += \
-    android.hidl.manager@1.0-java
 
 # HIDL
 PRODUCT_PACKAGES += \
@@ -390,23 +387,28 @@ PRODUCT_PACKAGES += \
 
 # Sensors
 PRODUCT_PACKAGES += \
-    sensors.msm8998 \
+    android.hardware.sensors@1.0-impl \
     android.hardware.sensors@1.0-service
 
 # Thermal
 PRODUCT_PACKAGES += \
-    thermal.msm8996 \
     android.hardware.thermal@1.0-impl \
     android.hardware.thermal@1.0-service
 
 # Usb HAL
 PRODUCT_PACKAGES += \
-    android.hardware.usb@1.0-service
+    android.hardware.usb@1.0-service \
+    com.android.future.usb.accessory
 
 # Vibrator
 PRODUCT_PACKAGES += \
     android.hardware.vibrator@1.0-impl \
     android.hardware.vibrator@1.0-service
+
+# VR
+PRODUCT_PACKAGES += \
+    android.hardware.vr@1.0-impl \
+    android.hardware.vr@1.0-service
 
 # Wifi
 PRODUCT_PACKAGES += \
