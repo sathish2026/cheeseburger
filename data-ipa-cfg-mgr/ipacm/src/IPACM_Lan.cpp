@@ -1542,8 +1542,8 @@ int IPACM_Lan::handle_wan_up(ipa_ip_type ip_type)
 /* only offload UL traffic of certain clients */
 #ifdef FEATURE_IPACM_HAL
 		flt_rule_entry.rule.attrib.attrib_mask |= IPA_FLT_SRC_ADDR;
-		flt_rule_entry.rule.attrib.u.v4.dst_addr_mask = prefix[IPA_IP_v4].v4Mask;
-		flt_rule_entry.rule.attrib.u.v4.dst_addr = prefix[IPA_IP_v4].v4Addr;
+		flt_rule_entry.rule.attrib.u.v4.src_addr_mask = prefix[IPA_IP_v4].v4Mask;
+		flt_rule_entry.rule.attrib.u.v4.src_addr = prefix[IPA_IP_v4].v4Addr;
 #endif
 		memcpy(&m_pFilteringTable->rules[0], &flt_rule_entry, sizeof(flt_rule_entry));
 		if (false == m_filtering.AddFilteringRule(m_pFilteringTable))
@@ -3244,17 +3244,6 @@ int IPACM_Lan::handle_uplink_filter_rule(ipacm_ext_prop *prop, ipa_ip_type iptyp
 				{
 					flt_rule_entry.rule.eq_attrib.rule_eq_bitmap |= (1<<4);
 				}
-#else
-				if(eq_index == 0)
-				{
-					flt_rule_entry.rule.eq_attrib.rule_eq_bitmap |= (1<<9);
-				}
-				else
-				{
-					flt_rule_entry.rule.eq_attrib.rule_eq_bitmap |= (1<<10);
-				}
-#endif
-				flt_rule_entry.rule.eq_attrib.offset_meq_128[eq_index].offset = 8;
 				*(uint32_t *)(flt_rule_entry.rule.eq_attrib.offset_meq_128[eq_index].mask + 0)
 					= prefix[IPA_IP_v6].v6Mask[3];
 				*(uint32_t *)(flt_rule_entry.rule.eq_attrib.offset_meq_128[eq_index].mask + 4)
@@ -3271,7 +3260,34 @@ int IPACM_Lan::handle_uplink_filter_rule(ipacm_ext_prop *prop, ipa_ip_type iptyp
 					= prefix[IPA_IP_v6].v6Addr[1];
 				*(uint32_t *)(flt_rule_entry.rule.eq_attrib.offset_meq_128[eq_index].value + 12)
 					= prefix[IPA_IP_v6].v6Addr[0];
-			}
+#else
+				if(eq_index == 0)
+				{
+					flt_rule_entry.rule.eq_attrib.rule_eq_bitmap |= (1<<9);
+				}
+				else
+				{
+					flt_rule_entry.rule.eq_attrib.rule_eq_bitmap |= (1<<10);
+				}
+				*(uint32_t *)(flt_rule_entry.rule.eq_attrib.offset_meq_128[eq_index].mask + 0)
+					= prefix[IPA_IP_v6].v6Mask[0];
+				*(uint32_t *)(flt_rule_entry.rule.eq_attrib.offset_meq_128[eq_index].mask + 4)
+					= prefix[IPA_IP_v6].v6Mask[1];
+				*(uint32_t *)(flt_rule_entry.rule.eq_attrib.offset_meq_128[eq_index].mask + 8)
+					= prefix[IPA_IP_v6].v6Mask[2];
+				*(uint32_t *)(flt_rule_entry.rule.eq_attrib.offset_meq_128[eq_index].mask + 12)
+					= prefix[IPA_IP_v6].v6Mask[3];
+				*(uint32_t *)(flt_rule_entry.rule.eq_attrib.offset_meq_128[eq_index].value + 0)
+					= prefix[IPA_IP_v6].v6Addr[0];
+				*(uint32_t *)(flt_rule_entry.rule.eq_attrib.offset_meq_128[eq_index].value + 4)
+					= prefix[IPA_IP_v6].v6Addr[1];
+				*(uint32_t *)(flt_rule_entry.rule.eq_attrib.offset_meq_128[eq_index].value + 8)
+					= prefix[IPA_IP_v6].v6Addr[2];
+				*(uint32_t *)(flt_rule_entry.rule.eq_attrib.offset_meq_128[eq_index].value + 12)
+					= prefix[IPA_IP_v6].v6Addr[3];
+#endif
+				flt_rule_entry.rule.eq_attrib.offset_meq_128[eq_index].offset = 8;
+		}
 			else
 			{
 				IPACMERR("Run out of MEQ128 equation.\n");
@@ -4312,6 +4328,7 @@ void IPACM_Lan::eth_bridge_post_event(ipa_cm_event_id evt, ipa_ip_type iptype, u
 {
 	ipacm_cmd_q_data eth_bridge_evt;
 	ipacm_event_eth_bridge *evt_data_eth_bridge;
+	const char *eventName = IPACM_Iface::ipacmcfg->getEventName(evt);
 #ifdef FEATURE_L2TP
 	ipacm_event_data_all *evt_data_all;
 #endif
@@ -4380,8 +4397,11 @@ void IPACM_Lan::eth_bridge_post_event(ipa_cm_event_id evt, ipa_ip_type iptype, u
 		}
 		eth_bridge_evt.evt_data = (void*)evt_data_eth_bridge;
 	}
-	IPACMDBG_H("Posting event %s\n",
-		IPACM_Iface::ipacmcfg->getEventName(evt));
+	if (eventName != NULL)
+	{
+		IPACMDBG_H("Posting event %s\n",
+				eventName);
+	}
 	IPACM_EvtDispatcher::PostEvt(&eth_bridge_evt);
 }
 
