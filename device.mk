@@ -108,7 +108,6 @@ PRODUCT_CHARACTERISTICS := nosdcard
 
 # Audio
 PRODUCT_PACKAGES += \
-    audiod \
     audio.a2dp.default \
     audio.primary.msm8998 \
     audio.r_submix.default \
@@ -194,6 +193,9 @@ PRODUCT_PACKAGES += \
     gralloc.msm8998 \
     hwcomposer.msm8998 \
     memtrack.msm8998 \
+    libdisplayconfig \
+    libhwc2on1adapter \
+    libgenlock \
     liboverlay \
     libtinyxml \
     qdcm_calib_data_samsung_s6e3fa5_1080p_cmd_mode_dsi_panel.xml \
@@ -205,15 +207,15 @@ PRODUCT_PACKAGES += \
     android.hardware.graphics.composer@2.1-service \
     android.hardware.memtrack@1.0-impl \
     android.hardware.memtrack@1.0-service \
-    android.hardware.broadcastradio@1.0-impl \
     vendor.display.color@1.0-service \
     vendor.display.color@1.0-impl \
     vendor.display.config@1.0 \
     vendor.display.config@1.0_vendor
 
-# Doze mode
+# ONEPLUS
 PRODUCT_PACKAGES += \
-    OneplusDoze
+    OneplusDoze \
+    OneplusPocketMode
 
 # DRM
 PRODUCT_PACKAGES += \
@@ -223,8 +225,6 @@ PRODUCT_PACKAGES += \
 
 # Fingerprint sensor
 PRODUCT_PACKAGES += \
-    fingerprintd \
-    OneplusPocketMode \
     android.hardware.biometrics.fingerprint@2.1-service
 
 # Gatekeeper HAL
@@ -234,7 +234,6 @@ PRODUCT_PACKAGES += \
 
 # GPS
 PRODUCT_PACKAGES += \
-    gps.msm8998 \
     liblocation_api \
     gps.conf \
     libgnss \
@@ -242,7 +241,6 @@ PRODUCT_PACKAGES += \
     libloc_core \
     libloc_stub \
     libloc_pla \
-    libcurl \
     libgnsspps \
     libvehiclenetwork-native \
     android.hardware.gnss@1.0-impl-qti \
@@ -352,6 +350,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     libc2dcolorconvert \
     libextmedia_jni \
+    libhypv_intercept \
     libOmxAacEnc \
     libOmxAmrEnc \
     libOmxCore \
@@ -386,9 +385,14 @@ PRODUCT_PACKAGES += \
 
 # RIL
 PRODUCT_PACKAGES += \
+    android.hardware.broadcastradio@1.0-impl \
     librmnetctl \
     libxml2 \
     libprotobuf-cpp-full
+
+PRODUCT_BOOT_JARS += \
+    qcnvitems \
+    qcrilhook
 
 # Sensors
 PRODUCT_PACKAGES += \
