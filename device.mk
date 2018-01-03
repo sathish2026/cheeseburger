@@ -266,6 +266,14 @@ PRODUCT_PACKAGES += \
     android.hidl.base@1.0 \
     android.hidl.manager@1.0-java
 
+# IMS
+PRODUCT_PACKAGES += \
+   ims-ext-common \
+   com.android.ims.rcsmanager \
+   com.android.ims.rcsmanager.xml \
+   RcsService \
+   PresencePolling
+
 # IPv6
 PRODUCT_PACKAGES += \
     ebtables \
