@@ -1,3 +1,7 @@
+# Device
+ro.display.series=OnePlus 5
+ro.sf.lcd_density=480
+
 # Region
 persist.sys.oem.region=OverSeas
 persist.vendor.audio.aanc.enable=true
