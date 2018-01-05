@@ -7,7 +7,7 @@ value:2951
 [AID_RFS_SHARED]
 value:2952
 
-[vendor/bin/wcnss_filter]
+[system/bin/wcnss_filter]
 mode: 0755
 user: AID_BLUETOOTH
 group: AID_BLUETOOTH
@@ -25,16 +25,16 @@ user: AID_CAMERA
 group: AID_SHELL
 caps: SYS_NICE
 
+[system/vendor/bin/qvrservice]
+mode: 0755
+user: AID_SYSTEM
+group: AID_SYSTEM
+caps: SYS_NICE
+
 [system/bin/cnss-daemon]
 mode: 0755
 user: AID_BLUETOOTH
 group: AID_BLUETOOTH
-caps: NET_BIND_SERVICE
-
-[vendor/bin/pm-service]
-mode: 0755
-user: AID_SYSTEM
-group: AID_SYSTEM
 caps: NET_BIND_SERVICE
 
 [system/vendor/bin/pm-service]
@@ -44,12 +44,6 @@ group: AID_SYSTEM
 caps: NET_BIND_SERVICE
 
 [system/bin/pm-service]
-mode: 0755
-user: AID_SYSTEM
-group: AID_SYSTEM
-caps: NET_BIND_SERVICE
-
-[vendor/bin/pd-mapper]
 mode: 0755
 user: AID_SYSTEM
 group: AID_SYSTEM
@@ -79,7 +73,7 @@ user: AID_SYSTEM
 group: AID_SYSTEM
 caps: NET_BIND_SERVICE
 
-[vendor/bin/imsdatadaemon]
+[system/bin/imsdatadaemon]
 mode: 0755
 user: AID_SYSTEM
 group: AID_SYSTEM
@@ -91,7 +85,7 @@ user: AID_SYSTEM
 group: AID_SYSTEM
 caps: NET_BIND_SERVICE
 
-[vendor/bin/ims_rtp_daemon]
+[system/bin/ims_rtp_daemon]
 mode: 0755
 user: AID_SYSTEM
 group: AID_RADIO
@@ -103,7 +97,7 @@ user: AID_SYSTEM
 group: AID_RADIO
 caps: NET_BIND_SERVICE
 
-[vendor/bin/cnd]
+[system/bin/cnd]
 mode: 0755
 user: AID_SYSTEM
 group: AID_SYSTEM
@@ -115,7 +109,7 @@ user: AID_SYSTEM
 group: AID_SYSTEM
 caps: NET_BIND_SERVICE BLOCK_SUSPEND NET_ADMIN
 
-[vendor/bin/slim_daemon]
+[system/bin/slim_daemon]
 mode: 0755
 user:  AID_GPS
 group: AID_GPS
