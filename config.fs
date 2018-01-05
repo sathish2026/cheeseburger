@@ -19,6 +19,12 @@ user: AID_BLUETOOTH
 group: AID_BLUETOOTH
 caps: BLOCK_SUSPEND
 
+[system/bin/mm-qcamera-daemon]
+mode: 0700
+user: AID_CAMERA
+group: AID_SHELL
+caps: SYS_NICE
+
 [system/bin/cnss-daemon]
 mode: 0755
 user: AID_BLUETOOTH
