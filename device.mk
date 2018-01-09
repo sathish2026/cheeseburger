@@ -165,7 +165,8 @@ PRODUCT_PACKAGES += \
     libbt-vendor \
     libbthost_if \
     android.hardware.bluetooth@1.0-impl \
-    android.hardware.bluetooth@1.0-service
+    android.hardware.bluetooth@1.0-service \
+    bt-mac-generator
 
 # Camera
 PRODUCT_PACKAGES += \
