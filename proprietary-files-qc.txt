@@ -43,10 +43,6 @@ vendor/lib/vendor.qti.hardware.alarm@1.0.so
 vendor/lib64/vendor.qti.hardware.alarm@1.0.so
 
 # Audio
-etc/permissions/audiosphere.xml
-framework/audiosphere.jar
-vendor/lib/soundfx/libasphere.so
-vendor/lib64/soundfx/libasphere.so
 vendor/lib/libacdb-fts.so
 vendor/lib/libacdbloader.so
 vendor/lib/libacdbrtac.so
@@ -75,10 +71,6 @@ vendor/bin/hci_qcomm_init
 vendor/bin/wcnss_filter
 -vendor/lib/libbtnv.so
 -vendor/lib64/libbtnv.so
-lib/com.qualcomm.qti.bluetooth_audio@1.0.so
-lib64/com.qualcomm.qti.bluetooth_audio@1.0.so
-vendor/lib/com.qualcomm.qti.bluetooth_audio@1.0_vendor.so
-vendor/lib64/com.qualcomm.qti.bluetooth_audio@1.0_vendor.so
 
 # Camera
 lib/libmm-qcamera.so
