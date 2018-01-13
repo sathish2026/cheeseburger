@@ -44,9 +44,9 @@ vendor.audio.use.sw.ape.decoder=true
 vendor.audio.hw.aac.encoder=true
 vendor.fm.a2dp.conc.disabled=true
 vendor.audio.noisy.broadcast.delay=600
-aaudio.mmap_policy=2
-aaudio.mmap_exclusive_policy=2
-aaudio.hw_burst_min_usec=1000
+#aaudio.mmap_policy=2
+#aaudio.mmap_exclusive_policy=2
+#aaudio.hw_burst_min_usec=1000
 
 # Battery
 ro.cutoff_voltage_mv=3200
