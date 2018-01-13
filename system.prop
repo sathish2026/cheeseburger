@@ -85,7 +85,7 @@ persist.vendor.dpm.feature=11
 drm.service.enabled=true
 
 # FRP
-ro.frp.pst=/dev/block/bootdevice/by-name/config
+ro.frp.pst=/dev/block/bootdevice/by-name/frp
 
 # Graphics
 debug.sf.hw=1
