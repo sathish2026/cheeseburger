@@ -11,3 +11,5 @@ allow cameraserver hal_perf_default:binder { call };
 allow cameraserver hal_perf_hwservice:hwservice_manager { find };
 
 allow cameraserver nfc_data_file:dir { search };
+allow cameraserver shell_exec:file { execute };
+allow cameraserver debugfs:dir { open read };
