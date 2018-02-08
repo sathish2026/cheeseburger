@@ -168,6 +168,10 @@ on boot
     chown system system /sys/devices/soc/soc:fpc_fpc1020/hw_reset
     #chmod 0660 /sys/devices/soc/soc:fpc_fpc1020/wakeup_enable
     #chown system system /sys/devices/soc/soc:fpc_fpc1020/wakeup_enable
+
+    # Pocket Mode
+    chown system system /proc/fingerprint/disable
+
     chmod 0666 /dev/qseecom
     #liuyan 2017/7/27 add for goodix fp
     chmod 0666 /dev/goodix_fp
