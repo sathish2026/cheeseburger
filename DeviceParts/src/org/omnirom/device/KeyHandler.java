@@ -60,7 +60,6 @@ import android.view.WindowManagerPolicy;
 
 import com.android.internal.os.DeviceKeyHandler;
 import com.android.internal.util.ArrayUtils;
-import com.android.internal.util.omni.OmniUtils;
 
 public class KeyHandler implements DeviceKeyHandler {
 
@@ -68,7 +67,6 @@ public class KeyHandler implements DeviceKeyHandler {
     private static final boolean DEBUG = true;
     private static final boolean DEBUG_SENSOR = false;
 
-    protected static final int GESTURE_REQUEST = 1;
     private static final int GESTURE_WAKELOCK_DURATION = 2000;
     private static final String KEY_CONTROL_PATH = "/proc/touchpanel/key_disable";
     private static final String FPC_CONTROL_PATH = "/sys/devices/soc/soc:fpc_fpc1020/proximity_state";
@@ -87,9 +85,6 @@ public class KeyHandler implements DeviceKeyHandler {
     private static final int GESTURE_UP_SWIPE_SCANCODE = 66;
 
     private static final int KEY_DOUBLE_TAP = 143;
-    private static final int KEY_HOME = 102;
-    private static final int KEY_BACK = 158;
-    private static final int KEY_RECENTS = 580;
     private static final int KEY_SLIDER_TOP = 601;
     private static final int KEY_SLIDER_CENTER = 602;
     private static final int KEY_SLIDER_BOTTOM = 603;
@@ -99,12 +94,6 @@ public class KeyHandler implements DeviceKeyHandler {
     private static final String DOZE_INTENT = "com.android.systemui.doze.pulse";
     private static final int HANDWAVE_MAX_DELTA_MS = 1000;
     private static final int POCKET_MIN_DELTA_MS = 5000;
-    private static final int FP_GESTURE_SWIPE_DOWN = 108;
-    private static final int FP_GESTURE_SWIPE_UP = 103;
-    private static final int FP_GESTURE_SWIPE_LEFT = 105;
-    private static final int FP_GESTURE_SWIPE_RIGHT = 106;
-    private static final int FP_GESTURE_LONG_PRESS = 305;
-
 
     private static final int[] sSupportedGestures = new int[]{
         GESTURE_II_SCANCODE,
@@ -120,12 +109,7 @@ public class KeyHandler implements DeviceKeyHandler {
         KEY_DOUBLE_TAP,
         KEY_SLIDER_TOP,
         KEY_SLIDER_CENTER,
-        KEY_SLIDER_BOTTOM,
-        FP_GESTURE_SWIPE_DOWN,
-        FP_GESTURE_SWIPE_UP,
-        FP_GESTURE_SWIPE_LEFT,
-        FP_GESTURE_SWIPE_RIGHT,
-        FP_GESTURE_LONG_PRESS,
+        KEY_SLIDER_BOTTOM
     };
 
     private static final int[] sHandledGestures = new int[]{
@@ -148,13 +132,12 @@ public class KeyHandler implements DeviceKeyHandler {
         KEY_DOUBLE_TAP
     };
 
-    protected final Context mContext;
+    private final Context mContext;
     private final PowerManager mPowerManager;
     private EventHandler mEventHandler;
     private WakeLock mGestureWakeLock;
     private Handler mHandler = new Handler();
     private SettingsObserver mSettingsObserver;
-    private static boolean mButtonDisabled;
     private final NotificationManager mNoMan;
     private final AudioManager mAudioManager;
     private CameraManager mCameraManager;
@@ -171,10 +154,7 @@ public class KeyHandler implements DeviceKeyHandler {
     private long mProxySensorTimestamp;
     private boolean mUseWaveCheck;
     private boolean mUsePocketCheck;
-    private boolean mFPcheck;
-    private boolean mDispOn;
     private WindowManagerPolicy mPolicy;
-    private boolean isFpgesture;
 
     private SensorEventListener mProximitySensor = new SensorEventListener() {
         @Override
@@ -182,14 +162,8 @@ public class KeyHandler implements DeviceKeyHandler {
             mProxyIsNear = event.values[0] < mSensor.getMaximumRange();
             if (DEBUG_SENSOR) Log.i(TAG, "mProxyIsNear = " + mProxyIsNear);
             if (mUseProxiCheck) {
-                if (android.os.Build.DEVICE.equals("OnePlus5")) {
-                    if (Utils.fileWritable(FPC_CONTROL_PATH)) {
-                        Utils.writeValue(FPC_CONTROL_PATH, mProxyIsNear ? "1" : "0");
-                    }
-                } else if (android.os.Build.DEVICE.equals("OnePlus5T")) {
-                    if (Utils.fileWritable(GOODIX_CONTROL_PATH)) {
-                    Utils.writeValue(GOODIX_CONTROL_PATH, mProxyIsNear ? "1" : "0");
-                    }
+                if(Utils.fileWritable(FPC_CONTROL_PATH)) {
+                    Utils.writeValue(FPC_CONTROL_PATH, mProxyIsNear ? "1" : "0");
                 }
             }
             if (mUseWaveCheck || mUsePocketCheck) {
@@ -212,7 +186,7 @@ public class KeyHandler implements DeviceKeyHandler {
         }
     };
 
-    private SensorEventListener mTiltSensorListener = new SensorEventListener() {
+	private SensorEventListener mTiltSensorListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
             long delta = SystemClock.elapsedRealtime() - mTiltSensorTimestamp;
@@ -239,9 +213,6 @@ public class KeyHandler implements DeviceKeyHandler {
 
         void observe() {
             mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.HARDWARE_KEYS_DISABLE),
-                    false, this);
-            mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(
                     Settings.System.DEVICE_PROXI_CHECK_ENABLED),
                     false, this);
             mContext.getContentResolver().registerContentObserver(Settings.System.getUriFor(
@@ -267,7 +238,6 @@ public class KeyHandler implements DeviceKeyHandler {
         }
 
         public void update() {
-            setButtonDisable(mContext);
             mUseProxiCheck = Settings.System.getIntForUser(
                     mContext.getContentResolver(), Settings.System.DEVICE_PROXI_CHECK_ENABLED, 1,
                     UserHandle.USER_CURRENT) == 1;
@@ -294,10 +264,8 @@ public class KeyHandler implements DeviceKeyHandler {
          @Override
          public void onReceive(Context context, Intent intent) {
              if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-                 mDispOn = true;
                  onDisplayOn();
              } else if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                 mDispOn = false;
                  onDisplayOff();
              }
          }
@@ -305,7 +273,6 @@ public class KeyHandler implements DeviceKeyHandler {
 
     public KeyHandler(Context context) {
         mContext = context;
-        mDispOn = true;
         mEventHandler = new EventHandler();
         mPowerManager = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
         mGestureWakeLock = mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
@@ -335,7 +302,7 @@ public class KeyHandler implements DeviceKeyHandler {
         if (event.getAction() != KeyEvent.ACTION_UP) {
             return false;
         }
-        isFpgesture = false;
+
         boolean isKeySupported = ArrayUtils.contains(sHandledGestures, event.getScanCode());
         if (isKeySupported) {
             if (DEBUG) Log.i(TAG, "scanCode=" + event.getScanCode());
@@ -352,20 +319,6 @@ public class KeyHandler implements DeviceKeyHandler {
                     if (DEBUG) Log.i(TAG, "KEY_SLIDER_BOTTOM");
                     doHandleSliderAction(2);
                     return true;
-            }
-        }
-
-        if (DEBUG) Log.i(TAG, "nav_code=" + event.getScanCode());
-        int fpcode = event.getScanCode();
-        mFPcheck = canHandleKeyEvent(event);
-        String value = getGestureValueForFPScanCode(fpcode);
-        if (mFPcheck && mDispOn && !TextUtils.isEmpty(value) && !value.equals(AppSelectListPreference.DISABLED_ENTRY)){
-            isFpgesture = true;
-            if (!launchSpecialActions(value) && !isCameraLaunchEvent(event)) {
-                    vibe();
-                    Intent intent = createIntent(value);
-                    if (DEBUG) Log.i(TAG, "intent = " + intent);
-                    mContext.startActivity(intent);
             }
         }
         return isKeySupported;
@@ -387,36 +340,13 @@ public class KeyHandler implements DeviceKeyHandler {
         return false;
     }
 
-    public static void setButtonDisable(Context context) {
-        // we should never come here on the 5t but just to be sure
-        if (android.os.Build.DEVICE.equals("OnePlus5")) {
-            mButtonDisabled = Settings.System.getIntForUser(
-                    context.getContentResolver(), Settings.System.HARDWARE_KEYS_DISABLE, 0,
-                    UserHandle.USER_CURRENT) == 1;
-            if (DEBUG) Log.i(TAG, "setButtonDisable=" + mButtonDisabled);
-            if(mButtonDisabled) {
-                Utils.writeValue(KEY_CONTROL_PATH, "1");
-                Utils.writeValue(FPC_KEY_CONTROL_PATH, "1");
-            }
-            else {
-                Utils.writeValue(KEY_CONTROL_PATH, "0");
-                Utils.writeValue(FPC_KEY_CONTROL_PATH, "0");
-            }
-        }
-    }
-
     @Override
     public boolean isCameraLaunchEvent(KeyEvent event) {
         if (event.getAction() != KeyEvent.ACTION_UP) {
             return false;
         }
-        if (mFPcheck) {
-            String value = getGestureValueForFPScanCode(event.getScanCode());
-            return !TextUtils.isEmpty(value) && value.equals(AppSelectListPreference.CAMERA_ENTRY);
-        } else {
-            String value = getGestureValueForScanCode(event.getScanCode());
-            return !TextUtils.isEmpty(value) && value.equals(AppSelectListPreference.CAMERA_ENTRY);
-        }
+        String value = getGestureValueForScanCode(event.getScanCode());
+        return !TextUtils.isEmpty(value) && value.equals(AppSelectListPreference.CAMERA_ENTRY);
     }
 
     @Override
@@ -506,18 +436,9 @@ public class KeyHandler implements DeviceKeyHandler {
         if (DEBUG) Log.i(TAG, "Display on");
         if (enableProxiSensor()) {
             mSensorManager.unregisterListener(mProximitySensor, mSensor);
-            enableGoodix();
         }
         if (mUseTiltCheck) {
             mSensorManager.unregisterListener(mTiltSensorListener, mTiltSensor);
-        }
-    }
-
-    private void enableGoodix() {
-        if (android.os.Build.DEVICE.equals("OnePlus5T")) {
-            if (Utils.fileWritable(GOODIX_CONTROL_PATH)) {
-                Utils.writeValue(GOODIX_CONTROL_PATH, "0");
-            }
         }
     }
 
@@ -598,38 +519,30 @@ public class KeyHandler implements DeviceKeyHandler {
             return true;
         } else if (value.equals(AppSelectListPreference.MUSIC_PLAY_ENTRY)) {
             mGestureWakeLock.acquire(GESTURE_WAKELOCK_DURATION);
-             vibe();
+            vibe();
             dispatchMediaKeyWithWakeLockToAudioService(KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE);
             return true;
         } else if (value.equals(AppSelectListPreference.MUSIC_NEXT_ENTRY)) {
             if (isMusicActive()) {
-                vibe();
                 mGestureWakeLock.acquire(GESTURE_WAKELOCK_DURATION);
+                vibe();
                 dispatchMediaKeyWithWakeLockToAudioService(KeyEvent.KEYCODE_MEDIA_NEXT);
             }
             return true;
         } else if (value.equals(AppSelectListPreference.MUSIC_PREV_ENTRY)) {
             if (isMusicActive()) {
-                vibe();
                 mGestureWakeLock.acquire(GESTURE_WAKELOCK_DURATION);
+                vibe();
                 dispatchMediaKeyWithWakeLockToAudioService(KeyEvent.KEYCODE_MEDIA_PREVIOUS);
             }
             return true;
         } else if (value.equals(AppSelectListPreference.VOLUME_UP_ENTRY)) {
-            vibe();
-            mAudioManager.adjustSuggestedStreamVolume(AudioManager.ADJUST_RAISE,AudioManager.USE_DEFAULT_STREAM_TYPE,AudioManager.FLAG_SHOW_UI);
+                vibe();
+       mAudioManager.adjustSuggestedStreamVolume(AudioManager.ADJUST_RAISE,AudioManager.USE_DEFAULT_STREAM_TYPE,AudioManager.FLAG_SHOW_UI);
             return true;
-        } else if (value.equals(AppSelectListPreference.VOLUME_DOWN_ENTRY)) {
-            vibe();
-            mAudioManager.adjustSuggestedStreamVolume(AudioManager.ADJUST_LOWER,AudioManager.USE_DEFAULT_STREAM_TYPE,AudioManager.FLAG_SHOW_UI);
-            return true;
-        } else if (value.equals(AppSelectListPreference.BROWSE_SCROLL_DOWN_ENTRY)) {
-            vibe();
-            OmniUtils.sendKeycode(KeyEvent.KEYCODE_PAGE_DOWN);
-            return true;
-        } else if (value.equals(AppSelectListPreference.BROWSE_SCROLL_UP_ENTRY)) {
-            vibe();
-            OmniUtils.sendKeycode(KeyEvent.KEYCODE_PAGE_UP);
+       } else if (value.equals(AppSelectListPreference.VOLUME_DOWN_ENTRY)) {
+                vibe();
+       mAudioManager.adjustSuggestedStreamVolume(AudioManager.ADJUST_LOWER,AudioManager.USE_DEFAULT_STREAM_TYPE,AudioManager.FLAG_SHOW_UI);
             return true;
         }
         return false;
@@ -671,38 +584,6 @@ public class KeyHandler implements DeviceKeyHandler {
         return null;
     }
 
-    private String getGestureValueForFPScanCode(int scanCode) {
-        switch(scanCode) {
-            case FP_GESTURE_SWIPE_DOWN:
-                if (areSystemNavigationKeysEnabled() == false){
-                    return Settings.System.getStringForUser(mContext.getContentResolver(),
-                       GestureSettings.DEVICE_GESTURE_MAPPING_10, UserHandle.USER_CURRENT);
-                }
-                break;
-            case FP_GESTURE_SWIPE_UP:
-                if (areSystemNavigationKeysEnabled() == false){
-                    return Settings.System.getStringForUser(mContext.getContentResolver(),
-                       GestureSettings.DEVICE_GESTURE_MAPPING_11, UserHandle.USER_CURRENT);
-                }
-                break;
-            case FP_GESTURE_SWIPE_LEFT:
-                return Settings.System.getStringForUser(mContext.getContentResolver(),
-                    GestureSettings.DEVICE_GESTURE_MAPPING_12, UserHandle.USER_CURRENT);
-            case FP_GESTURE_SWIPE_RIGHT:
-                return Settings.System.getStringForUser(mContext.getContentResolver(),
-                    GestureSettings.DEVICE_GESTURE_MAPPING_13, UserHandle.USER_CURRENT);
-            case FP_GESTURE_LONG_PRESS:
-                return Settings.System.getStringForUser(mContext.getContentResolver(),
-                    GestureSettings.DEVICE_GESTURE_MAPPING_14, UserHandle.USER_CURRENT);
-        }
-        return null;
-    }
-
-    private boolean areSystemNavigationKeysEnabled() {
-        return Settings.Secure.getIntForUser(mContext.getContentResolver(),
-                Settings.Secure.SYSTEM_NAVIGATION_KEYS_ENABLED, 0, UserHandle.USER_CURRENT) == 1;
-    }
-
     private void launchDozePulse() {
         if (DEBUG) Log.i(TAG, "Doze pulse");
         mContext.sendBroadcastAsUser(new Intent(DOZE_INTENT),
@@ -735,9 +616,7 @@ public class KeyHandler implements DeviceKeyHandler {
         boolean doVibrate = Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.DEVICE_OFF_SCREEN_GESTURE_FEEDBACK_ENABLED, 0,
                 UserHandle.USER_CURRENT) == 1;
-        if (isFpgesture && mPolicy != null) {
-            mPolicy.performHapticFeedbackLw(null, HapticFeedbackConstants.LONG_PRESS, false);
-        } else if (doVibrate && mPolicy != null) {
+        if (doVibrate && mPolicy != null) {
             mPolicy.performHapticFeedbackLw(null, HapticFeedbackConstants.LONG_PRESS, true);
         }
     }
