@@ -21,12 +21,31 @@
 #
 $(call inherit-product, device/oneplus/oneplus5/hidl.mk)
 $(call inherit-product, vendor/oneplus/oneplus5/device-vendor.mk)
-$(call inherit-product, vendor/omni/config/phone-xxhdpi-4096-dalvik-heap.mk)
 
 DEVICE_PACKAGE_OVERLAYS += device/oneplus/oneplus5/overlay/common
 
-PRODUCT_PACKAGES += \
-    omni_charger_res_images
+# HWUI from Stock
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.hwui.texture_cache_size=72 \
+    ro.hwui.layer_cache_size=48 \
+    ro.hwui.r_buffer_cache_size=8 \
+    ro.hwui.path_cache_size=32 \
+    ro.hwui.gradient_cache_size=1 \
+    ro.hwui.drop_shadow_cache_size=6 \
+    ro.hwui.texture_cache_flushrate=0.4 \
+    ro.hwui.text_small_cache_width=1024 \
+    ro.hwui.text_small_cache_height=1024 \
+    ro.hwui.text_large_cache_width=2048 \
+    ro.hwui.text_large_cache_height=4096
+
+# Dalvik from Stock
+PRODUCT_PROPERTY_OVERRIDES += \
+    dalvik.vm.heapstartsize=8m \
+    dalvik.vm.heapgrowthlimit=256m \
+    dalvik.vm.heapsize=512m \
+    dalvik.vm.heaptargetutilization=0.75 \
+    dalvik.vm.heapminfree=512k \
+    dalvik.vm.heapmaxfree=8m
 
 PRODUCT_PACKAGES += \
     com.android.future.usb.accessory
@@ -98,8 +117,7 @@ PRODUCT_CHARACTERISTICS := nosdcard
 
 # Bluetooth
 PRODUCT_PACKAGES += \
-    libbt-vendor \
-    libbthost_if
+    libbt-vendor
 
 # Display
 PRODUCT_PACKAGES += \
@@ -144,10 +162,6 @@ PRODUCT_COPY_FILES += \
     $(TOPDIR)frameworks/av/services/audiopolicy/config/a2dp_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/a2dp_audio_policy_configuration.xml \
     $(TOPDIR)frameworks/av/services/audiopolicy/config/r_submix_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/r_submix_audio_policy_configuration.xml \
     $(TOPDIR)frameworks/av/services/audiopolicy/config/usb_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/usb_audio_policy_configuration.xml
-
-# Fingerprint sensor
-#PRODUCT_PACKAGES += \
-    fingerprintd
 
 # GPS
 PRODUCT_PACKAGES += \
@@ -220,7 +234,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     librmnetctl \
     libxml2 \
-    libprotobuf-cpp-full \
     rild_socket
 
 PRODUCT_PACKAGES += \
@@ -245,7 +258,7 @@ PRODUCT_PACKAGES += \
 
 # Camera
 PRODUCT_PACKAGES += \
-    SnapdragonCamera2
+    SnapdragonCamera
 
 # power
 #PRODUCT_PACKAGES += \
@@ -265,18 +278,13 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     fs_config_files
 
-# Shims
-#PRODUCT_PACKAGES += \
-    libshims_system_properties
-
 # QMI
 PRODUCT_PACKAGES += \
     libjson
 
+# IMS
 PRODUCT_PACKAGES += \
-    ims-ext-common
-
-PRODUCT_PACKAGES += \
+    ims-ext-common \
     com.android.ims.rcsmanager \
     com.android.ims.rcsmanager.xml \
     RcsService \
@@ -284,10 +292,6 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_BOOT_JARS += \
     tcmiface
-
-# Sensors
-#PRODUCT_PACKAGES += \
-    sensors.msm8998
 
 PRODUCT_PACKAGES += \
     tcmiface
@@ -308,8 +312,6 @@ PRODUCT_COPY_FILES += \
     frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_audio.xml \
     frameworks/av/media/libstagefright/data/media_codecs_google_telephony.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_telephony.xml \
     frameworks/av/media/libstagefright/data/media_codecs_google_video.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_video.xml
-
-PRODUCT_PACKAGE_OVERLAYS += vendor/omni/overlay/CarrierConfig
 
 # Temporary handling
 #

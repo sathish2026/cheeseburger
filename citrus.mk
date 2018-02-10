@@ -23,24 +23,20 @@
 # $(call inherit-product, device/sample/products/backup_overlay.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
 
-# Get the prebuilt list of APNs
-$(call inherit-product, vendor/omni/config/gsm.mk)
-
 # Inherit from the common Open Source product configuration
 $(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base_telephony.mk)
 
 # must be before including omni part
-TARGET_BOOTANIMATION_SIZE := 1080p
+TARGET_SCREEN_HEIGHT := 1920
+TARGET_SCREEN_WIDTH := 1080
 
 # Inherit from our custom product configuration
-$(call inherit-product, vendor/omni/config/common.mk)
+$(call inherit-product, vendor/citrus/common.mk)
 
 # Inherit from hardware-specific part of the product configuration
 $(call inherit-product, device/oneplus/oneplus5/device.mk)
 
 PRODUCT_PROPERTY_OVERRIDES += ro.hardware.nfc_nci=nqx.default
-
-ALLOW_MISSING_DEPENDENCIES := true
 
 DEVICE_PACKAGE_OVERLAYS += device/oneplus/oneplus5/overlay/device
 
@@ -48,7 +44,7 @@ PRODUCT_PACKAGES += \
     android.hardware.biometrics.fingerprint@2.1-service
 
 # Discard inherited values and use our own instead.
-PRODUCT_NAME := omni_oneplus5
+PRODUCT_NAME := citrus_oneplus5
 PRODUCT_DEVICE := oneplus5
 PRODUCT_BRAND := OnePlus
 PRODUCT_MANUFACTURER := OnePlus

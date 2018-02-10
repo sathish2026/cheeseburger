@@ -52,7 +52,7 @@ ENABLE_SCHEDBOOST := true
 
 BOARD_KERNEL_CMDLINE := androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x237 ehci-hcd.park=3 lpm_levels.sleep_disabled=1 sched_enable_hmp=1 sched_enable_power_aware=1 service_locator.enable=1 swiotlb=2048 androidboot.usbcontroller=a800000.dwc3
 BOARD_KERNEL_CMDLINE += androidboot.configfs=true
-#BOARD_KERNEL_CMDLINE += androidboot.selinux=permissive
+BOARD_KERNEL_CMDLINE += androidboot.selinux=permissive
 BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_PAGESIZE := 4096
 BOARD_KERNEL_TAGS_OFFSET := 0x01E00000
@@ -62,9 +62,8 @@ TARGET_KERNEL_ARCH := arm64
 TARGET_KERNEL_HEADER_ARCH := arm64
 TARGET_KERNEL_CROSS_COMPILE_PREFIX := aarch64-linux-android-
 BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
-TARGET_KERNEL_APPEND_DTB := true
 TARGET_KERNEL_SOURCE := kernel/oneplus/msm8998
-TARGET_KERNEL_CONFIG := omni_oneplus5_defconfig
+TARGET_KERNEL_CONFIG := citrus_oneplus5_defconfig
 
 # partitions
 BOARD_BOOTIMAGE_PARTITION_SIZE := 67108864
@@ -83,7 +82,6 @@ TARGET_USERIMAGES_USE_F2FS := false
 
 # Display
 BOARD_USES_ADRENO := true
-TARGET_QCOM_DISPLAY_VARIANT := caf-msm8998
 
 USE_OPENGL_RENDERER := true
 TARGET_USES_ION := true
@@ -101,10 +99,6 @@ TARGET_USES_COLOR_METADATA := true
 TARGET_USES_HWC2 := true
 TARGET_USES_GRALLOC1 := true
 TARGET_USES_QCOM_DISPLAY_BSP := true
-
-# Audio/media
-TARGET_QCOM_AUDIO_VARIANT := caf-msm8998
-TARGET_QCOM_MEDIA_VARIANT := caf-msm8998
 
 #AUDIO_FEATURE_FLAGS
 BOARD_USES_ALSA_AUDIO := true
@@ -174,7 +168,6 @@ AUDIO_FEATURE_ENABLED_SND_MONITOR := true
 TARGET_USES_QTI_CAMERA2CLIENT := true
 USE_CAMERA_STUB := true
 TARGET_USES_MEDIA_EXTENSIONS := false
-BOARD_USES_SNAPDRAGONCAMERA_VERSION := 2
 
 #Media
 TARGET_ENABLE_QC_AV_ENHANCEMENTS := true
@@ -187,10 +180,8 @@ BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_QCOM := true
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(BOARD_PATH)/bluetooth
 QCOM_BT_USE_BTNV := true
-TARGET_QCOM_BLUETOOTH_VARIANT := caf-msm8998
 
 # Wifi
-TARGET_USES_QCOM_WCNSS_QMI       := false
 BOARD_HAS_QCOM_WLAN              := true
 BOARD_WLAN_DEVICE                := qcwcn
 WPA_SUPPLICANT_VERSION           := VER_0_8_X
@@ -201,13 +192,6 @@ BOARD_HOSTAPD_PRIVATE_LIB        := lib_driver_cmd_$(BOARD_WLAN_DEVICE)
 WIFI_DRIVER_FW_PATH_STA          := "sta"
 WIFI_DRIVER_FW_PATH_AP           := "ap"
 WIFI_DRIVER_FW_PATH_P2P          := "p2p"
-#WIFI_DRIVER_MODULE_PATH          := "/system/lib/modules/wlan.ko"
-#WIFI_DRIVER_MODULE_NAME          := "wlan"
-#WIFI_DRIVER_MODULE_ARG           := ""
-WIFI_DRIVER_BUILT                := qca_cld3
-WIFI_DRIVER_DEFAULT              := qca_cld3
-#WIFI_HIDL_FEATURE_AWARE          := true
-WIFI_DRIVER_LOAD_DELAY           := true
 
 CONFIG_ACS := true
 CONFIG_IEEE80211AC := true
@@ -215,7 +199,7 @@ CONFIG_IEEE80211AC := true
 # charger
 BOARD_CHARGER_ENABLE_SUSPEND := true
 BOARD_CHARGER_DISABLE_INIT_BLANK := true
-HEALTHD_ENABLE_OP_FASTCHG_CHECK := true
+WITH_CUSTOM_CHARGER := false
 
 # power hal
 TARGET_PROVIDES_POWERHAL := true
@@ -223,9 +207,6 @@ TARGET_USES_INTERACTION_BOOST := true
 
 # liblights
 TARGET_PROVIDES_LIBLIGHT := true
-
-# Sensors
-#USE_SENSOR_MULTI_HAL := true
 
 # NFC
 TARGET_USES_NQ_NFC := true
@@ -249,19 +230,16 @@ DEVICE_MATRIX_FILE := $(BOARD_PATH)/compatibility_matrix.xml
 
 # Crypto
 TARGET_HW_DISK_ENCRYPTION := true
-TARGET_CRYPTFS_HW_PATH := $(BOARD_PATH)/cryptfs_hw
 
 #vold
 TARGET_KERNEL_HAVE_NTFS := true
 TARGET_KERNEL_HAVE_EXFAT := true
 
 # CNE and DPM
-#TARGET_LDPRELOAD := libNimsWrap.so
 BOARD_USES_QCNE := true
 
 # selinux
 include device/qcom/sepolicy/sepolicy.mk
-include vendor/omni/sepolicy/sepolicy.mk
 BOARD_SEPOLICY_DIRS += $(BOARD_PATH)/sepolicy/vendor
 BOARD_PLAT_PUBLIC_SEPOLICY_DIR += $(BOARD_PATH)/sepolicy/public
 BOARD_PLAT_PRIVATE_SEPOLICY_DIR += $(BOARD_PATH)/sepolicy/private
