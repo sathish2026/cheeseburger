@@ -33,6 +33,9 @@ TARGET_SCREEN_WIDTH := 1080
 # Inherit from our custom product configuration
 $(call inherit-product, vendor/citrus/common.mk)
 
+# To set CAF version
+$(call inherit-product, vendor/citrus/config/common_la.um.mk)
+
 # Inherit from hardware-specific part of the product configuration
 $(call inherit-product, device/oneplus/oneplus5/device.mk)
 
