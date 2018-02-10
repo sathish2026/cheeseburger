@@ -37,8 +37,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.util.Log;
-import static android.provider.Settings.Secure.SYSTEM_NAVIGATION_KEYS_ENABLED;
-import android.os.UserHandle;
 
 public class GestureSettings extends PreferenceFragment implements
         Preference.OnPreferenceChangeListener {
@@ -55,14 +53,6 @@ public class GestureSettings extends PreferenceFragment implements
     public static final String KEY_UP_SWIPE_APP = "up_swipe_gesture_app";
     public static final String KEY_LEFT_SWIPE_APP = "left_swipe_gesture_app";
     public static final String KEY_RIGHT_SWIPE_APP = "right_swipe_gesture_app";
-    public static final String KEY_FP_GESTURE_CATEGORY = "key_fp_gesture_category";
-    public static final String KEY_FP_GESTURE_DEFAULT_CATEGORY = "gesture_settings";
-
-    public static final String FP_GESTURE_SWIPE_DOWN_APP = "fp_down_swipe_gesture_app";
-    public static final String FP_GESTURE_SWIPE_UP_APP = "fp_up_swipe_gesture_app";
-    public static final String FP_GESTURE_SWIPE_RIGHT_APP = "fp_right_swipe_gesture_app";
-    public static final String FP_GESTURE_SWIPE_LEFT_APP = "fp_left_swipe_gesture_app";
-    public static final String FP_GESTURE_LONG_PRESS_APP = "fp_long_press_gesture_app";
 
     public static final String DEVICE_GESTURE_MAPPING_0 = "device_gesture_mapping_0_0";
     public static final String DEVICE_GESTURE_MAPPING_1 = "device_gesture_mapping_1_0";
@@ -74,14 +64,8 @@ public class GestureSettings extends PreferenceFragment implements
     public static final String DEVICE_GESTURE_MAPPING_7 = "device_gesture_mapping_7_0";
     public static final String DEVICE_GESTURE_MAPPING_8 = "device_gesture_mapping_8_0";
     public static final String DEVICE_GESTURE_MAPPING_9 = "device_gesture_mapping_9_0";
-    public static final String DEVICE_GESTURE_MAPPING_10 = "device_gesture_mapping_10_0";
-    public static final String DEVICE_GESTURE_MAPPING_11 = "device_gesture_mapping_11_0";
-    public static final String DEVICE_GESTURE_MAPPING_12 = "device_gesture_mapping_12_0";
-    public static final String DEVICE_GESTURE_MAPPING_13 = "device_gesture_mapping_13_0";
-    public static final String DEVICE_GESTURE_MAPPING_14 = "device_gesture_mapping_14_0";
 
     private TwoStatePreference mProxiSwitch;
-    private TwoStatePreference mFpSwipeDownSwitch;
     private TwoStatePreference mOffscreenGestureFeedbackSwitch;
     private AppSelectListPreference mDoubleSwipeApp;
     private AppSelectListPreference mCircleApp;
@@ -93,13 +77,6 @@ public class GestureSettings extends PreferenceFragment implements
     private AppSelectListPreference mUpSwipeApp;
     private AppSelectListPreference mLeftSwipeApp;
     private AppSelectListPreference mRightSwipeApp;
-    private AppSelectListPreference mFPDownSwipeApp;
-    private AppSelectListPreference mFPUpSwipeApp;
-    private AppSelectListPreference mFPRightSwipeApp;
-    private AppSelectListPreference mFPLeftSwipeApp;
-    private AppSelectListPreference mFPLongPressApp;
-    private PreferenceCategory fpGestures;
-    private boolean mFpDownSwipe;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -172,49 +149,6 @@ public class GestureSettings extends PreferenceFragment implements
         value = Settings.System.getString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_9);
         mRightSwipeApp.setValue(value);
         mRightSwipeApp.setOnPreferenceChangeListener(this);
-
-        if (android.os.Build.DEVICE.equals("OnePlus5T")) {
-
-            mFPDownSwipeApp = (AppSelectListPreference) findPreference(FP_GESTURE_SWIPE_DOWN_APP);
-            mFPDownSwipeApp.setEnabled(!areSystemNavigationKeysEnabled());
-            value = Settings.System.getString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_10);
-            mFPDownSwipeApp.setValue(value);
-            mFPDownSwipeApp.setOnPreferenceChangeListener(this);
-
-            mFPUpSwipeApp = (AppSelectListPreference) findPreference(FP_GESTURE_SWIPE_UP_APP);
-            mFPUpSwipeApp.setEnabled(!areSystemNavigationKeysEnabled());
-            value = Settings.System.getString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_11);
-            mFPUpSwipeApp.setValue(value);
-            mFPUpSwipeApp.setOnPreferenceChangeListener(this);
-
-            mFPRightSwipeApp = (AppSelectListPreference) findPreference(FP_GESTURE_SWIPE_RIGHT_APP);
-            mFPRightSwipeApp.setEnabled(true);
-            value = Settings.System.getString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_12);
-            mFPRightSwipeApp.setValue(value);
-            mFPRightSwipeApp.setOnPreferenceChangeListener(this);
-
-            mFPLeftSwipeApp = (AppSelectListPreference) findPreference(FP_GESTURE_SWIPE_LEFT_APP);
-            mFPLeftSwipeApp.setEnabled(true);
-            value = Settings.System.getString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_13);
-            mFPLeftSwipeApp.setValue(value);
-            mFPLeftSwipeApp.setOnPreferenceChangeListener(this);
-
-            mFPLongPressApp = (AppSelectListPreference) findPreference(FP_GESTURE_LONG_PRESS_APP);
-            mFPLongPressApp.setEnabled(true);
-            value = Settings.System.getString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_14);
-            mFPLongPressApp.setValue(value);
-            mFPLongPressApp.setOnPreferenceChangeListener(this);
-        } else {
-            Preference fpGestures = findPreference(KEY_FP_GESTURE_CATEGORY);
-            Preference fpGesturesDefault = findPreference(KEY_FP_GESTURE_DEFAULT_CATEGORY);
-            getPreferenceScreen().removePreference(fpGestures);
-            getPreferenceScreen().removePreference(fpGesturesDefault);
-        }
-    }
-
-    private boolean areSystemNavigationKeysEnabled() {
-        return Settings.Secure.getInt(getContext().getContentResolver(),
-               Settings.Secure.SYSTEM_NAVIGATION_KEYS_ENABLED, 0) == 1;
     }
 
     @Override
@@ -284,21 +218,6 @@ public class GestureSettings extends PreferenceFragment implements
             boolean gestureDisabled = value.equals(AppSelectListPreference.DISABLED_ENTRY);
             setGestureEnabled(KEY_RIGHT_SWIPE_APP, !gestureDisabled);
             Settings.System.putString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_9, value);
-        } else if (preference == mFPDownSwipeApp) {
-            String value = (String) newValue;
-            Settings.System.putString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_10, value);
-        } else if (preference == mFPUpSwipeApp) {
-            String value = (String) newValue;
-            Settings.System.putString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_11, value);
-        } else if (preference == mFPRightSwipeApp) {
-            String value = (String) newValue;
-            Settings.System.putString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_12, value);
-        } else if (preference == mFPLeftSwipeApp) {
-            String value = (String) newValue;
-            Settings.System.putString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_13, value);
-        } else if (preference == mFPLongPressApp) {
-            String value = (String) newValue;
-            Settings.System.putString(getContext().getContentResolver(), DEVICE_GESTURE_MAPPING_14, value);
         }
         return true;
     }
@@ -348,16 +267,5 @@ public class GestureSettings extends PreferenceFragment implements
                         .newInstance(preference.getKey());
         fragment.setTargetFragment(this, 0);
         fragment.show(getFragmentManager(), "dialog_preference");
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mFPDownSwipeApp != null) {
-            mFPDownSwipeApp.setEnabled(!areSystemNavigationKeysEnabled());
-        }
-        if (mFPUpSwipeApp != null) {
-            mFPUpSwipeApp.setEnabled(!areSystemNavigationKeysEnabled());
-        }
     }
 }
